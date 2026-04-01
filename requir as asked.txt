@@ -1,0 +1,3 @@
+DATABASE_URL = postgresql://postgres:[YOUR-PASSWORD]@db.rndkqxlyidgtcqafpfik.supabase.co:5432/postgres
+Passworf for the database: Yaseen@071106
+github token = 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
