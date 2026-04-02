@@ -1,10 +1,19 @@
-import api from './api';
-import { endpoints } from '@/config/endpoints';
-import type { Task, TaskDetail, TaskCreate, TaskSubmission, FundPayload, Submission } from '@/types';
+import api from "./api";
+import { endpoints } from "@/config/endpoints";
+import type {
+  Task,
+  TaskDetail,
+  TaskCreate,
+  TaskSubmission,
+  FundPayload,
+  Submission,
+} from "@/types";
 
 export const taskService = {
   async list(skip = 0, limit = 100): Promise<Task[]> {
-    const res = await api.get<Task[]>(endpoints.tasks.list, { params: { skip, limit } });
+    const res = await api.get<Task[]>(endpoints.tasks.list, {
+      params: { skip, limit },
+    });
     return res.data;
   },
 

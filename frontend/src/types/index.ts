@@ -11,8 +11,14 @@ export interface Token {
   token_type: string;
 }
 
-export type TaskStatus = 'OPEN' | 'FUNDED' | 'CLAIMED' | 'SUBMITTED' | 'VERIFIED' | 'PAID';
-export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FAILED';
+export type TaskStatus =
+  | "OPEN"
+  | "FUNDED"
+  | "CLAIMED"
+  | "SUBMITTED"
+  | "VERIFIED"
+  | "PAID";
+export type VerificationStatus = "PENDING" | "VERIFIED" | "FAILED";
 
 export interface Task {
   id: number;

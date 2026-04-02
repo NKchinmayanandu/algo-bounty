@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -6,49 +6,57 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
 }
 
-export function Input({ label, error, icon, className = '', ...props }: InputProps) {
+export function Input({
+  label,
+  error,
+  icon,
+  className = "",
+  ...props
+}: InputProps) {
+  // Use specific left padding if icon is present to prevent overlap
+  const paddingClass = icon ? "pl-10 pr-4 py-3" : "px-4 py-3";
+
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2 w-full">
       {label && (
-        <label className="block text-sm font-medium text-text-secondary">
+        <label className="block text-sm font-medium text-text-secondary text-left">
           {label}
         </label>
       )}
-      <div className="relative">
+      <div className="relative w-full">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted z-10 flex items-center justify-center">
             {icon}
           </div>
         )}
         <input
           className={`
-            w-full rounded-xl
-            px-4 py-3 text-sm
-            focus:outline-none
+            w-full rounded-xl text-sm
+            focus:outline-none focus:ring-0
             transition-all duration-300
-            ${icon ? 'pl-10' : ''}
-            ${error ? 'border-red-400/50' : ''}
+            ${paddingClass}
+            ${error ? "border-red-400/50" : "border-border-subtle"}
             ${className}
           `}
           style={{
-            backgroundColor: '#141419',
-            border: '1px solid rgba(255,255,255,0.08)',
-            color: '#f0eef5',
+            backgroundColor: "#141419",
+            border: "1px solid rgba(255,255,255,0.08)",
+            color: "#f0eef5",
+            minHeight: "48px", // Ensure explicit height to prevent squishing
+            boxSizing: "border-box",
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(244,114,182,0.4)';
-            e.currentTarget.style.boxShadow = '0 0 0 1px rgba(244,114,182,0.2)';
+            e.currentTarget.style.borderColor = "rgba(244,114,182,0.4)";
+            e.currentTarget.style.boxShadow = "0 0 0 1px rgba(244,114,182,0.2)";
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.boxShadow = "none";
           }}
           {...props}
         />
       </div>
-      {error && (
-        <p className="text-xs text-red-400">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-400 text-left">{error}</p>}
     </div>
   );
 }
@@ -58,11 +66,16 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   error?: string;
 }
 
-export function Textarea({ label, error, className = '', ...props }: TextareaProps) {
+export function Textarea({
+  label,
+  error,
+  className = "",
+  ...props
+}: TextareaProps) {
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2 w-full">
       {label && (
-        <label className="block text-sm font-medium text-text-secondary">
+        <label className="block text-sm font-medium text-text-secondary text-left">
           {label}
         </label>
       )}
@@ -70,29 +83,28 @@ export function Textarea({ label, error, className = '', ...props }: TextareaPro
         className={`
           w-full rounded-xl
           px-4 py-3 text-sm
-          focus:outline-none
-          transition-all duration-300 resize-none min-h-[120px]
-          ${error ? 'border-red-400/50' : ''}
+          focus:outline-none focus:ring-0
+          transition-all duration-300 resize-y min-h-[120px]
+          ${error ? "border-red-400/50" : "border-border-subtle"}
           ${className}
         `}
         style={{
-          backgroundColor: '#141419',
-          border: '1px solid rgba(255,255,255,0.08)',
-          color: '#f0eef5',
+          backgroundColor: "#141419",
+          border: "1px solid rgba(255,255,255,0.08)",
+          color: "#f0eef5",
+          boxSizing: "border-box",
         }}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(244,114,182,0.4)';
-          e.currentTarget.style.boxShadow = '0 0 0 1px rgba(244,114,182,0.2)';
+          e.currentTarget.style.borderColor = "rgba(244,114,182,0.4)";
+          e.currentTarget.style.boxShadow = "0 0 0 1px rgba(244,114,182,0.2)";
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-          e.currentTarget.style.boxShadow = 'none';
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+          e.currentTarget.style.boxShadow = "none";
         }}
         {...props}
       />
-      {error && (
-        <p className="text-xs text-red-400">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-400 text-left">{error}</p>}
     </div>
   );
 }

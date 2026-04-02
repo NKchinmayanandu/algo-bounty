@@ -1,6 +1,12 @@
-import api from './api';
-import { endpoints } from '@/config/endpoints';
-import type { User, Token, UserRegister, UserLogin, WalletConnect } from '@/types';
+import api from "./api";
+import { endpoints } from "@/config/endpoints";
+import type {
+  User,
+  Token,
+  UserRegister,
+  UserLogin,
+  WalletConnect,
+} from "@/types";
 
 export const authService = {
   async register(data: UserRegister): Promise<User> {

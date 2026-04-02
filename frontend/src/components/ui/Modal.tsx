@@ -1,22 +1,28 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
 const sizeClasses = {
-  sm: 'max-w-sm',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
+  sm: "max-w-sm",
+  md: "max-w-lg",
+  lg: "max-w-2xl",
 };
 
-export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = "md",
+}: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -36,7 +42,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={`
               relative z-10 w-full mx-4 ${sizeClasses[size]}
               bg-surface-900 border border-border-subtle rounded-2xl
@@ -47,7 +53,9 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
-                <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
+                <h3 className="text-lg font-semibold text-text-primary">
+                  {title}
+                </h3>
                 <button
                   onClick={onClose}
                   className="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-700 transition-colors"

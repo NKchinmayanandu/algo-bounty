@@ -1,6 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { WS_BASE_URL, endpoints } from '@/config/endpoints';
-import type { WSEvent } from '@/types';
+import { useEffect, useRef, useCallback } from "react";
+import { WS_BASE_URL, endpoints } from "@/config/endpoints";
+import type { WSEvent } from "@/types";
 
 export function useWebSocket(onEvent: (event: WSEvent) => void) {
   const wsRef = useRef<WebSocket | null>(null);

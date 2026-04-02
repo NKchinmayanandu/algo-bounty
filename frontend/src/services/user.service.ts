@@ -1,6 +1,6 @@
-import api from './api';
-import { endpoints } from '@/config/endpoints';
-import type { Task, User } from '@/types';
+import api from "./api";
+import { endpoints } from "@/config/endpoints";
+import type { Task, User } from "@/types";
 
 export const userService = {
   async getHistory(): Promise<Task[]> {

@@ -1,33 +1,33 @@
-import { useState, type FormEvent } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { Coins, FileText, Type, ArrowRight, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Input, Textarea } from '@/components/ui/Input';
-import { Modal } from '@/components/ui/Modal';
-import { taskService } from '@/services/tasks.service';
-import { useAuthStore } from '@/hooks/useAuthStore';
+import { useState, type FormEvent } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Coins, FileText, Type, ArrowRight, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Input, Textarea } from "@/components/ui/Input";
+import { Modal } from "@/components/ui/Modal";
+import { taskService } from "@/services/tasks.service";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 export default function CreateTaskPage() {
   const navigate = useNavigate();
   const { isAuthenticated, walletAddress, connectWallet } = useAuthStore();
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [reward, setReward] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [reward, setReward] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   // Wallet modal
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const [walletInput, setWalletInput] = useState('');
+  const [walletInput, setWalletInput] = useState("");
   const [walletLoading, setWalletLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
@@ -36,7 +36,7 @@ export default function CreateTaskPage() {
       return;
     }
 
-    setError('');
+    setError("");
     setLoading(true);
     try {
       const task = await taskService.create({
@@ -47,7 +47,7 @@ export default function CreateTaskPage() {
       setSuccess(true);
       setTimeout(() => navigate(`/dashboard/tasks/${task.id}`), 1500);
     } catch (err: any) {
-      setError(err?.response?.data?.detail || 'Failed to create task');
+      setError(err?.response?.data?.detail || "Failed to create task");
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function CreateTaskPage() {
       await connectWallet(walletInput.trim());
       setShowWalletModal(false);
     } catch (err: any) {
-      setError('Failed to connect wallet');
+      setError("Failed to connect wallet");
     } finally {
       setWalletLoading(false);
     }
@@ -77,12 +77,14 @@ export default function CreateTaskPage() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
+            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
             className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-400/10 border border-emerald-400/30 flex items-center justify-center"
           >
             <CheckCircle size={36} className="text-emerald-400" />
           </motion.div>
-          <h2 className="text-2xl font-bold text-text-primary mb-2">Task Created!</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
+            Task Created!
+          </h2>
           <p className="text-text-secondary">Redirecting to your task...</p>
         </motion.div>
       </div>
@@ -97,7 +99,9 @@ export default function CreateTaskPage() {
         transition={{ duration: 0.5 }}
         className="mb-10"
       >
-        <h1 className="text-3xl font-bold text-text-primary mb-2">Create a Bounty</h1>
+        <h1 className="text-3xl font-bold text-text-primary mb-2">
+          Create a Bounty
+        </h1>
         <p className="text-text-secondary">
           Define your task and set a reward. Funds will be held in escrow.
         </p>
@@ -108,7 +112,7 @@ export default function CreateTaskPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         onSubmit={handleSubmit}
-        className="glass-card p-8 space-y-6"
+        className="glass-card p-8 flex flex-col gap-6"
         id="create-task-form"
       >
         {error && (
@@ -157,7 +161,9 @@ export default function CreateTaskPage() {
         <div className="p-4 rounded-xl bg-surface-800 border border-border-subtle">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-text-primary">Algorand Wallet</p>
+              <p className="text-sm font-medium text-text-primary">
+                Algorand Wallet
+              </p>
               {walletAddress ? (
                 <p className="text-xs text-emerald-400 mt-1 font-mono">
                   {walletAddress.slice(0, 8)}...{walletAddress.slice(-6)}
@@ -179,12 +185,7 @@ export default function CreateTaskPage() {
           </div>
         </div>
 
-        <Button
-          type="submit"
-          size="lg"
-          isLoading={loading}
-          className="w-full"
-        >
+        <Button type="submit" size="lg" isLoading={loading} className="w-full">
           Create Bounty
           <ArrowRight size={16} />
         </Button>
@@ -197,7 +198,7 @@ export default function CreateTaskPage() {
         title="Connect Algorand Wallet"
         size="sm"
       >
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           <p className="text-sm text-text-secondary">
             Enter your Algorand wallet address to create and fund bounties.
           </p>

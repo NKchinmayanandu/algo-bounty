@@ -1,20 +1,22 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/hooks/useAuthStore';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import DashboardLayout from '@/layouts/DashboardLayout';
-import LandingPage from '@/pages/LandingPage';
-import LoginPage from '@/pages/LoginPage';
-import RegisterPage from '@/pages/RegisterPage';
-import DashboardHome from '@/pages/DashboardHome';
-import LiveTasksPage from '@/pages/LiveTasksPage';
-import CreateTaskPage from '@/pages/CreateTaskPage';
-import TaskDetailPage from '@/pages/TaskDetailPage';
-import ProfilePage from '@/pages/ProfilePage';
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import LandingPage from "@/pages/LandingPage";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import DashboardHome from "@/pages/DashboardHome";
+import LiveTasksPage from "@/pages/LiveTasksPage";
+import CreateTaskPage from "@/pages/CreateTaskPage";
+import TaskDetailPage from "@/pages/TaskDetailPage";
+import ProfilePage from "@/pages/ProfilePage";
 
 function AppInit({ children }: { children: React.ReactNode }) {
   const initialize = useAuthStore((s) => s.initialize);
-  useEffect(() => { initialize(); }, [initialize]);
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
   return <>{children}</>;
 }
 
@@ -40,7 +42,10 @@ export default function App() {
           </Route>
 
           {/* Redirect /create to dashboard create (with auth) */}
-          <Route path="/create" element={<Navigate to="/dashboard/create" replace />} />
+          <Route
+            path="/create"
+            element={<Navigate to="/dashboard/create" replace />}
+          />
 
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
