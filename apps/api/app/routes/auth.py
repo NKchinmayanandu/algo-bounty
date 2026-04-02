@@ -4,26 +4,45 @@ from app.db.session import get_db
 from app.models.base import User, Wallet
 from app.schemas.base import UserRegister, UserLogin, Token, UserResponse
 from app.services.auth import get_password_hash, verify_password, create_access_token, get_current_user
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
 router = APIRouter()
 
 @router.post("/register", response_model=UserResponse)
 def register(user_data: UserRegister, db: Session = Depends(get_db)):
+
+    # Check username
     db_user = db.query(User).filter(User.username == user_data.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
-        
-    hashed_password = get_password_hash(user_data.password)
-    new_user = User(username=user_data.username, password_hash=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    
-    if user_data.wallet_address:
-        new_wallet = Wallet(user_id=new_user.id, wallet_address=user_data.wallet_address)
-        db.add(new_wallet)
+
+    try:
+        hashed_password = get_password_hash(user_data.password)
+
+        new_user = User(
+            username=user_data.username,
+            password_hash=hashed_password
+        )
+        db.add(new_user)
+        db.flush()  # get ID without commit
+
+        if user_data.wallet_address:
+            new_wallet = Wallet(
+                user_id=new_user.id,
+                wallet_address=user_data.wallet_address
+            )
+            db.add(new_wallet)
+
         db.commit()
-        
+
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Wallet already exists"
+        )
+
     return new_user
 
 @router.post("/login", response_model=Token)
