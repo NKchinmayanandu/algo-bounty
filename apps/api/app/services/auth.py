@@ -16,6 +16,9 @@ SECRET_KEY = os.getenv("JWT_SECRET", "super-secret-key-just-for-demo")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days
 
+if len(SECRET_KEY) < 32:
+    raise ValueError("JWT_SECRET must be at least 32 characters long")
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 

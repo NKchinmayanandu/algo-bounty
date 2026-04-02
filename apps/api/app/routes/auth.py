@@ -43,11 +43,19 @@ def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 # Wallet linking
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+from app.services.wallet import is_valid_wallet_address
 
 class WalletConnectPayload(BaseModel):
     wallet_address: str
     signature: str = "" # To be verified ideally
+
+    @field_validator("wallet_address")
+    @classmethod
+    def validate_wallet_address(cls, value: str) -> str:
+        if not is_valid_wallet_address(value):
+            raise ValueError("Invalid wallet address format")
+        return value
 
 @router.post("/wallet/connect")
 def connect_wallet(payload: WalletConnectPayload, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -71,4 +79,3 @@ def disconnect_wallet(current_user: User = Depends(get_current_user), db: Sessio
         db.delete(current_user.wallet)
         db.commit()
     return {"status": "disconnected"}
-
