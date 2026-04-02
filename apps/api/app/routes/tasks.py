@@ -7,7 +7,6 @@ from app.db.session import get_db
 from app.models.base import Task, TaskStatusEnum, User, Submission, VerificationStatusEnum
 from app.schemas.base import TaskCreate, TaskDetail, TaskBase, TaskSubmission, SubmissionResponse
 from app.services.auth import get_current_user
-from app.services.algorand import assign_worker, release_payment
 from app.services.github import verify_github_repo
 from app.realtime.tasks import manager
 
@@ -73,6 +72,8 @@ async def claim_task(task_id: int, current_user: User = Depends(get_current_user
         raise HTTPException(status_code=400, detail="Task is not available for claiming")
     if task.creator_user_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot claim your own task")
+    if task.assignee_user_id is not None:
+        raise HTTPException(status_code=409, detail="Task already claimed")
         
     task.assignee_user_id = current_user.id
     task.status = TaskStatusEnum.CLAIMED
@@ -116,6 +117,8 @@ async def verify_task(task_id: int, current_user: User = Depends(get_current_use
         raise HTTPException(status_code=403, detail="Only creator can verify")
     if task.status != TaskStatusEnum.SUBMITTED:
         raise HTTPException(status_code=400, detail="Task is not SUBMITTED")
+    if task.submission is None:
+        raise HTTPException(status_code=400, detail="Task has no submission")
         
     is_valid = verify_github_repo(task.submission.repo_url)
     if is_valid:

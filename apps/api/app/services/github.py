@@ -27,7 +27,7 @@ def verify_github_repo(repo_url: str) -> bool:
         
     try:
         # Check repo exists and is public
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers=headers, timeout=10)
         if response.status_code != 200:
             return False
             
@@ -37,7 +37,7 @@ def verify_github_repo(repo_url: str) -> bool:
             
         # Check README exists
         readme_url = f"https://api.github.com/repos/{repo_path}/readme"
-        readme_response = requests.get(readme_url, headers=headers)
+        readme_response = requests.get(readme_url, headers=headers, timeout=10)
         if readme_response.status_code != 200:
             return False
             

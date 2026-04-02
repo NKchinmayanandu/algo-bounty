@@ -7,14 +7,11 @@ from app.db.session import Base, engine
 from app.realtime.tasks import manager
 import uvicorn
 
-# Create Database tables
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Trustless Task Bounty API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,6 +20,10 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(tasks_router, prefix="/tasks", tags=["tasks"])
 app.include_router(users_router, prefix="/users", tags=["users"])
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
 
 @app.websocket("/ws/tasks")
 async def websocket_endpoint(websocket: WebSocket):
