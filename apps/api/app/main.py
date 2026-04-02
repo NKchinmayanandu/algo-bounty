@@ -5,6 +5,7 @@ from app.routes.tasks import router as tasks_router
 from app.routes.users import router as users_router
 from app.db.session import Base, engine
 from app.realtime.tasks import manager
+from sqlalchemy import inspect, text
 import uvicorn
 
 app = FastAPI(title="Trustless Task Bounty API")
@@ -24,6 +25,30 @@ app.include_router(users_router, prefix="/users", tags=["users"])
 @app.on_event("startup")
 def on_startup():
     Base.metadata.create_all(bind=engine)
+    ensure_submission_columns()
+
+
+def ensure_submission_columns():
+    """
+    Lightweight startup sync for legacy databases missing newer submission fields.
+    """
+    inspector = inspect(engine)
+    if "submissions" not in inspector.get_table_names():
+        return
+
+    existing_columns = {column["name"] for column in inspector.get_columns("submissions")}
+    statements = []
+    if "tx_hash" not in existing_columns:
+        statements.append("ALTER TABLE submissions ADD COLUMN tx_hash VARCHAR")
+    if "block_round" not in existing_columns:
+        statements.append("ALTER TABLE submissions ADD COLUMN block_round INTEGER")
+
+    if not statements:
+        return
+
+    with engine.begin() as conn:
+        for statement in statements:
+            conn.execute(text(statement))
 
 @app.websocket("/ws/tasks")
 async def websocket_endpoint(websocket: WebSocket):

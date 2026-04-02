@@ -1,13 +1,23 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional, List
 from datetime import datetime
 from app.models.base import TaskStatusEnum, VerificationStatusEnum
+from app.services.wallet import is_valid_wallet_address
 
 # Auth Schemas
 class UserRegister(BaseModel):
     username: str
     password: str
     wallet_address: Optional[str] = None
+
+    @field_validator("wallet_address")
+    @classmethod
+    def validate_wallet_address(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return value
+        if not is_valid_wallet_address(value):
+            raise ValueError("Invalid wallet address format")
+        return value
 
 class UserLogin(BaseModel):
     username: str
