@@ -1,47 +1,66 @@
 import React from "react";
-import { motion } from "framer-motion";
 
 interface CardProps {
   children: React.ReactNode;
   className?: string;
-  onClick?: () => void;
-  hoverable?: boolean;
+  padding?: "none" | "sm" | "md" | "lg";
 }
 
-export function Card({
-  children,
-  className = "",
-  onClick,
-  hoverable = true,
-}: CardProps) {
+const paddingMap = {
+  none: "",
+  sm: "p-4",
+  md: "p-6",
+  lg: "p-8",
+};
+
+export function Card({ children, className = "", padding = "md" }: CardProps) {
   return (
-    <motion.div
-      whileHover={hoverable ? { y: -4, scale: 1.01 } : undefined}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      onClick={onClick}
-      className={`
-        glass-card p-6 relative overflow-hidden
-        ${onClick ? "cursor-pointer" : ""}
-        ${className}
-      `}
+    <div
+      className={[
+        "rounded-2xl border border-border-subtle",
+        "bg-surface-900/60 backdrop-blur-sm",
+        paddingMap[padding],
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
-export function CardSkeleton({ className = "" }: { className?: string }) {
+export function CardHeader({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={`skeleton h-48 rounded-2xl ${className}`}>
-      <div className="p-6 space-y-4">
-        <div className="skeleton h-4 w-3/4 rounded" />
-        <div className="skeleton h-3 w-full rounded" />
-        <div className="skeleton h-3 w-2/3 rounded" />
-        <div className="mt-6 flex justify-between">
-          <div className="skeleton h-6 w-20 rounded" />
-          <div className="skeleton h-6 w-16 rounded" />
-        </div>
-      </div>
+    <div className={["mb-6", className].filter(Boolean).join(" ")}>
+      {children}
     </div>
+  );
+}
+
+export function CardTitle({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <h3
+      className={[
+        "text-lg font-semibold text-text-primary",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {children}
+    </h3>
   );
 }

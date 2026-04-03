@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { Mail, Lock, ArrowRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -24,7 +24,7 @@ export default function LoginPage() {
       navigate("/dashboard");
     } catch (err: any) {
       setError(
-        err?.response?.data?.detail || "Login failed. Please try again.",
+        err?.response?.data?.detail || "Login failed. Please check your credentials.",
       );
     } finally {
       setLoading(false);
@@ -32,48 +32,64 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface-950 relative overflow-hidden font-sans">
-      {/* Background orbs */}
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-sakura-400/5 blur-[120px] animate-pulse-glow" />
-      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-violet-500/5 blur-[100px] animate-pulse-glow" />
+    <div className="min-h-screen flex flex-col bg-surface-950 font-sans">
+      {/* Ambient background */}
+      <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-sakura-400/5 rounded-full blur-[80px] sm:blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-violet-500/5 rounded-full blur-[60px] sm:blur-[100px]" />
+      </div>
 
-      <div className="flex-1 flex items-center justify-center px-6 relative z-10 w-full h-full">
-        <div className="w-full max-w-6xl mx-auto flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="w-full max-w-md flex flex-col"
-          >
-            {/* Logo */}
-            <div className="text-center mb-10">
-              <Link to="/" className="inline-flex items-center gap-2 mb-6">
-                <Sparkles size={20} className="text-sakura-400" />
-                <span className="text-xl font-bold text-gradient-sakura">
-                  Bounty Escrow
-                </span>
-              </Link>
-              <h1 className="text-3xl font-bold text-text-primary mb-2">
-                Welcome back
-              </h1>
-              <p className="text-text-secondary text-sm">
-                Sign in to your account
-              </p>
-            </div>
+      {/* Top bar */}
+      <header className="relative z-10 flex items-center justify-between px-6 py-4">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sakura-400 to-violet-500 flex items-center justify-center">
+            <Zap size={14} className="text-white" />
+          </div>
+          <span className="font-bold text-text-primary text-sm">Bounty Escrow</span>
+        </Link>
+        <Link
+          to="/register"
+          className="text-xs text-text-muted hover:text-text-secondary transition-colors"
+        >
+          No account? <span className="text-sakura-400 font-medium">Register →</span>
+        </Link>
+      </header>
 
-            {/* Form */}
+      {/* Centered card */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="w-full max-w-md"
+        >
+          {/* Heading */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-text-primary mb-2">
+              Welcome back
+            </h1>
+            <p className="text-text-secondary text-sm">
+              Sign in to access your bounties
+            </p>
+          </div>
+
+          {/* Form card */}
+          <div className="w-full bg-surface-900/80 border border-border-subtle rounded-2xl p-8 backdrop-blur-sm">
             <form
               onSubmit={handleSubmit}
-              className="glass-card w-full max-w-md p-8 rounded-2xl flex flex-col gap-6 mx-auto"
+              className="flex flex-col gap-5"
               id="login-form"
+              noValidate
             >
+              {/* Error alert */}
               {error && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-3 rounded-xl bg-red-400/10 border border-red-400/20 text-red-400 text-sm"
+                  className="p-3 rounded-xl bg-red-400/10 border border-red-400/20 text-red-400 text-sm flex items-start gap-2"
                 >
-                  {error}
+                  <span className="shrink-0 mt-0.5">⚠</span>
+                  <span>{error}</span>
                 </motion.div>
               )}
 
@@ -82,8 +98,9 @@ export default function LoginPage() {
                 placeholder="Enter your username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                icon={<Mail size={16} />}
+                icon={<Mail size={15} />}
                 required
+                autoComplete="username"
                 id="login-username"
               />
 
@@ -93,8 +110,9 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                icon={<Lock size={16} />}
+                icon={<Lock size={15} />}
                 required
+                autoComplete="current-password"
                 id="login-password"
               />
 
@@ -108,19 +126,18 @@ export default function LoginPage() {
                 <ArrowRight size={16} />
               </Button>
             </form>
+          </div>
 
-            {/* Register link */}
-            <p className="text-center mt-6 text-sm text-text-secondary">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-sakura-400 hover:text-sakura-300 transition-colors font-medium"
-              >
-                Create one
-              </Link>
-            </p>
-          </motion.div>
-        </div>
+          <p className="text-center mt-6 text-sm text-text-muted">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="text-sakura-400 hover:text-sakura-300 font-medium transition-colors"
+            >
+              Create one
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </div>
   );
